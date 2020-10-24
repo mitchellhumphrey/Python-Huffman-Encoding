@@ -6,14 +6,14 @@ How to use:
 
 python compress.py "name of input file(including extension)" "name of output file(excluding extension)"
 
-##decompress.py
+## decompress.py
 
 How to use:
 
 python decompress.py "name of input file(including extension)" "name of output file(including extension)"
 
 
-##P8A file spec
+## P8A file spec
 
 file is in Big Endian
 
