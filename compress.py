@@ -18,6 +18,9 @@ class Node:
             self.character = node.character
 
 
+# pre:
+# post:
+# description:
 def make_table(tree, table, prefix):
     if tree.character:
         # print("character is " + tree.character)
@@ -26,11 +29,11 @@ def make_table(tree, table, prefix):
     if not tree.left and not tree.right:
         return
 
-    if tree.left == None:
+    if not tree.left:
         # print("left is None")
         make_table(tree.right, table, prefix + '1')
         return
-    if tree.right == None:
+    if not tree.right:
         print("right is None")
         make_table(tree.left, table, prefix + '0')
         return
@@ -38,6 +41,9 @@ def make_table(tree, table, prefix):
     make_table(tree.right, table, prefix + '1')
 
 
+# pre:
+# post:
+# description: Don't need anymore
 def print_tree(tree):
     if not tree.character:
         # print("hi im printing the character " + tree.character)
@@ -48,11 +54,12 @@ def print_tree(tree):
         print_tree(tree.left)
 
 
-file = open(Path("./"+sys.argv[1]), 'r')
-out = open(Path("./"+sys.argv[2] + ".p8a"), "wb+")
+file = open(Path("./" + sys.argv[1]), 'r')
+out = open(Path("./" + sys.argv[2] + ".p8a"), "wb+")
 
 dictionary = defaultdict(lambda: 0)
 
+# goes through the input file 
 for line in file:
     for char in line:
         dictionary[char] += 1
