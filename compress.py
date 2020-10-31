@@ -54,15 +54,19 @@ def print_tree(tree):
         print_tree(tree.left)
 
 
-file = open(Path("./" + sys.argv[1]), 'r')
+file = open(Path("./" + sys.argv[1]), 'rb')
 out = open(Path("./" + sys.argv[2] + ".p8a"), "wb+")
 
 dictionary = defaultdict(lambda: 0)
 
-# goes through the input file 
-for line in file:
-    for char in line:
-        dictionary[char] += 1
+# goes through the input file
+temp_byte = 0
+while True:
+    temp_byte = file.read(1)
+    if len(temp_byte) == 0:
+        break
+    else:
+        dictionary[temp_byte] += 1
 
 list2 = []
 
@@ -82,6 +86,13 @@ while len(list2) > 1:
     temp.right = right[1]
     temp.left = left[1]
     list2.append((left[0] + right[0], temp))
+    if left[1].character or right[1].character:
+        if not left[1].character:
+            print("merged 00000000 and", bin(right[1].character[0])[2:].zfill(8))
+        elif not right[1].character:
+            print("merged", bin(left[1].character[0])[2:].zfill(8), "and 00000000")
+        else:
+            print("merged", bin(left[1].character[0])[2:].zfill(8), "and", bin(right[1].character[0])[2:].zfill(8))
 
 table = {}
 tree = list2[0][1]
@@ -98,7 +109,12 @@ print(max_length)
 
 out.write(max_length.to_bytes(1, 'big'))
 code_item_table.sort(key=lambda x: len(x[0]))
+print('at line 100')
 print(code_item_table)
+
+for x in code_item_table:
+    if len(x[0]):
+        print(x)
 
 amount_of_lengths = [0 for x in range(max_length + 1)]
 for x in code_item_table:
@@ -125,7 +141,9 @@ while len(code_item_table) > 0:
     bit_array += temp_array
     bit_array += temp[0]
 
+print("line 129")
 # print(bit_array)
+print(len(bit_array))
 out.write(bit_array.tobytes())
 
 file.seek(0)
@@ -134,12 +152,13 @@ char = None
 bigstring = bitarray()
 while True:
     char = file.read(1)
-    if char == "":
+    if char == b"":
         break
-    bigstring += table[char]
+    bigstring += bitarray(table[char])
 
 amount_of_padding = (-len(bigstring)) % 8
 
 out.write(amount_of_padding.to_bytes(1, 'big'))
 
 out.write(bigstring.tobytes())
+print("hi")

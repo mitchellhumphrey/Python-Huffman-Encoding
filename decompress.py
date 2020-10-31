@@ -2,9 +2,8 @@ from bitarray import bitarray
 import time
 import sys
 
-
 inputfile = open(sys.argv[1], "rb")
-out = open(sys.argv[2], 'w+')
+out = open(sys.argv[2], 'wb+')
 
 longest_code_length = int.from_bytes(inputfile.read(1), 'big')
 
@@ -38,7 +37,7 @@ key_list = []
 item_list = []
 for x in amount_for_each_length:
     while x > 0:
-        char = chr(int.from_bytes(bit_array_table[:8].tobytes(), 'big'))
+        char = (int.from_bytes(bit_array_table[:8].tobytes(), 'big'))
         bit_array_table = bit_array_table[8:]
         code = bit_array_table[:index]
         bit_array_table = bit_array_table[index:]
@@ -52,34 +51,37 @@ amount_of_padding = int.from_bytes(inputfile.read(1), 'big')
 actual_text = inputfile.read()
 bit_array_message = bitarray()
 bit_array_message.frombytes(actual_text)
-DECODED_TEXT = ""
+DECODED_TEXT = b""
 DECODED_TEXT_ARRAY = []
 index = 0
 bit_array_compare = bitarray()
 
-
-
-#for key, item in table.items():
+for a, b in zip(key_list, item_list):
+    print(a, b)
+# for key, item in table.items():
 #    key_list.append(key)
 #    item_list.append(item)
-
+print(time.time())
 start = time.time()
 
 while len(bit_array_message) > amount_of_padding:
+    # print(len(bit_array_message), " bit array message", amount_of_padding, " is padding")
+    # print(index)
     index += 1
     bit_string = bit_array_message[:index]
     if bit_string in key_list:
         # DECODED_TEXT += table[bit_string]
-        DECODED_TEXT += item_list[key_list.index(bit_string)]
+        DECODED_TEXT += bytes([item_list[key_list.index(bit_string)]])
         bit_array_message = bit_array_message[index:]
         index = 0
 
     if len(DECODED_TEXT) > 1000:
         DECODED_TEXT_ARRAY.append(DECODED_TEXT)
-        DECODED_TEXT = ''
+        DECODED_TEXT = b''
 DECODED_TEXT_ARRAY.append(DECODED_TEXT)
 
 print(time.time() - start)
 
 for x in DECODED_TEXT_ARRAY:
     out.write(x)
+
